@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gillian &amp; Marianne · The French Alps · Final Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root{
+    --teal:#1C9DB1;
+    --teal-deep:#16808F;
+    --ink:#2C2B28;
+    --muted:#6F6B64;
+    --line:#E7E2D8;
+    --sea:#2BA3B4;
+    --paper:#F6F2EA;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:#fff;color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  .serif{font-family:"Fraunces",Georgia,serif}
+  a{color:var(--teal-deep)}
+
+  /* ---------------- sticky nav ---------------- */
+  .tabs{
+    position:sticky;top:0;z-index:60;
+    background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    display:flex;justify-content:flex-start;gap:2px;
+    padding:9px 14px;overflow-x:auto;scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none}
+  @media(min-width:780px){.tabs{justify-content:center}}
+  .tab{
+    appearance:none;border:none;background:none;cursor:pointer;
+    font-family:"Fraunces",Georgia,serif;font-size:16px;font-weight:500;
+    letter-spacing:.01em;color:var(--muted);text-decoration:none;
+    padding:8px 2px;margin:0 10px;border-bottom:2px solid transparent;white-space:nowrap;
+    transition:.2s;
+  }
+  .tab:hover{color:var(--teal-deep)}
+  .tab.book{color:var(--teal-deep);font-weight:600}
+  section[id]{scroll-margin-top:58px}
+
+  /* ---------------- scene pattern ---------------- */
+  .scene{position:relative}
+  .scene > .bg{position:sticky;top:0;height:100vh;z-index:0;overflow:hidden}
+  .scene > .cap{position:absolute;left:0;right:0;z-index:1}
+  .scene > .panel{position:relative;z-index:2;background:#fff;min-height:60vh}
+
+  /* ---------------- hero map ---------------- */
+  .hero .bg{background:var(--sea)}
+  .hero .heromap{position:absolute;inset:0;z-index:0;background:var(--sea)}
+  .hero-tint{
+    position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(8,34,40,.55) 0%,rgba(8,34,40,.18) 38%,rgba(8,34,40,.5) 100%);
+  }
+  .hero .heromap .leaflet-control-attribution{font-size:9px;opacity:.8}
+  .hero .cap{top:7vh;text-align:center;color:#fff;padding:0 24px}
+  .hero .eyebrow{
+    font-size:11px;letter-spacing:.34em;text-transform:uppercase;
+    font-weight:600;margin-bottom:12px;opacity:.92;
+  }
+  .hero h1{
+    font-family:"Fraunces",serif;font-weight:600;
+    font-size:clamp(23px,4.8vw,38px);line-height:1.1;letter-spacing:-.01em;
+    margin:0 auto;max-width:14em;text-shadow:0 2px 18px rgba(0,40,46,.4);
+  }
+  .hero .dates{
+    margin-top:13px;font-size:13px;letter-spacing:.04em;font-weight:500;opacity:.95;
+  }
+  .hero .locked{
+    display:inline-block;margin-top:14px;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
+    border:1px solid rgba(255,255,255,.65);border-radius:99px;padding:7px 16px;
+    backdrop-filter:blur(2px);
+  }
+  .scrollcue{
+    position:absolute;left:50%;bottom:20px;transform:translateX(-50%);
+    z-index:2;color:#fff;opacity:.85;font-size:22px;animation:bob 1.8s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,7px)}}
+  @media (prefers-reduced-motion:reduce){.scrollcue{animation:none}}
+
+  /* ---------------- overview ---------------- */
+  .section{max-width:720px;margin:0 auto;padding:64px 24px 26px}
+  .section h2{
+    font-family:"Fraunces",serif;font-weight:500;
+    font-size:clamp(30px,6vw,44px);line-height:1.05;margin:0 0 26px;
+    color:var(--ink);
+  }
+  .section p{font-size:17px;line-height:1.85;color:#54514b;margin:0 0 22px}
+
+  /* ---------------- route map ---------------- */
+  .routewrap{max-width:720px;margin:6px auto 2px;padding:0 24px 40px}
+  .route-label{
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;margin:0 0 12px;
+  }
+  .routemap{height:380px;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:#dfe9ea}
+  .routemap .leaflet-control-attribution{font-size:9px}
+
+  /* ---------------- day scene ---------------- */
+  .day .bg img{width:100%;height:100%;object-fit:cover;display:block;background:#cfe0e2}
+  .day-scrim{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(10,30,34,.20) 0%,rgba(10,30,34,.05) 42%,rgba(10,30,34,.34) 100%);
+  }
+  .day .cap{
+    top:30vh;text-align:center;color:#fff;padding:0 24px;
+    text-shadow:0 2px 26px rgba(0,30,36,.5);
+  }
+  .day .cap .dno{
+    font-family:"Fraunces",serif;font-style:italic;font-weight:500;
+    font-size:clamp(22px,5vw,30px);margin-bottom:4px;
+  }
+  .day .cap h3{
+    font-family:"Fraunces",serif;font-weight:600;
+    font-size:clamp(34px,7.6vw,58px);line-height:1.02;margin:0;
+  }
+  .day .cap .ddate{
+    font-family:"Fraunces",serif;font-weight:500;
+    font-size:clamp(20px,4.4vw,28px);margin-top:8px;
+  }
+
+  /* ---------------- day body ---------------- */
+  .day-body{max-width:720px;margin:0 auto;padding:46px 24px 40px}
+  .callout{
+    background:var(--teal);color:#fff;border-radius:3px;
+    padding:20px 22px;font-size:16px;line-height:1.6;margin:0 0 30px;
+  }
+  .callout.alt{background:#2BB0A4}
+  .callout a{color:#fff;font-weight:600}
+  .callout .ttl{font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:13.5px;margin-bottom:8px;display:block}
+  .ev{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .ev:last-child{border-bottom:none}
+  .ev .t{font-weight:600;color:var(--teal-deep);min-width:62px;font-variant-numeric:tabular-nums}
+  .ev .d{color:#54514b;font-size:16px;line-height:1.55}
+  .opt-h{font-weight:600;margin:28px 0 10px;color:var(--ink)}
+  .opt{list-style:none;padding:0;margin:0 0 8px}
+  .opt li{
+    position:relative;padding:7px 0 7px 22px;color:#54514b;font-size:16px;line-height:1.5;
+    border-bottom:1px solid #F1ECE3;
+  }
+  .opt li::before{content:"–";position:absolute;left:0;color:var(--teal);font-weight:600}
+
+  /* ---------------- gallery ---------------- */
+  .gallery-wrap{position:relative;margin:34px 0 10px}
+  .gallery{
+    display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+    gap:0;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+  }
+  .gallery::-webkit-scrollbar{display:none}
+  .slide{flex:0 0 100%;scroll-snap-align:center;padding:0;position:relative}
+  .slide img{
+    width:100%;aspect-ratio:4/5;object-fit:cover;
+    display:block;background:#dfe9ea;
+  }
+  .gallery-wrap::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:96px;z-index:2;
+    pointer-events:none;background:linear-gradient(transparent,rgba(8,24,28,.42));
+  }
+  .dots{
+    position:absolute;left:0;right:0;bottom:16px;z-index:3;
+    display:flex;justify-content:center;gap:10px;
+  }
+  .dot{
+    width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(255,255,255,.9);
+    background:transparent;transition:.2s;cursor:pointer;padding:0;
+    box-shadow:0 0 4px rgba(0,0,0,.25);
+  }
+  .dot.on{background:#fff}
+  @media(min-width:780px){.gallery-wrap{max-width:560px;margin-left:auto;margin-right:auto}}
+
+  /* ---------------- NEW: logistics card ---------------- */
+  .logi{
+    border:1px solid var(--line);border-radius:6px;
+    padding:6px 20px 8px;margin:30px 0;
+    background:#FCFAF6;
+  }
+  .logi-h{
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;padding:16px 0 6px;
+  }
+  .leg{
+    display:flex;gap:13px;align-items:flex-start;
+    padding:14px 0;border-top:1px solid var(--line);
+  }
+  .leg:first-of-type{border-top:none}
+  .mode{
+    flex:0 0 auto;margin-top:2px;
+    font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:#fff;background:var(--teal-deep);border-radius:3px;
+    padding:4px 8px;min-width:56px;text-align:center;
+  }
+  .mode.walk{background:#8FA6A0}
+  .mode.cable{background:#2BB0A4}
+  .mode.climb{background:#4E8A5A}
+  .leg-main{flex:1;min-width:0}
+  .leg-title{font-weight:600;font-size:15.5px;color:var(--ink)}
+  .leg-desc{font-size:14.5px;color:#54514b;line-height:1.55;margin-top:3px}
+  .leg-desc a{font-weight:600;text-decoration-thickness:1px}
+  .leg-price{
+    flex:0 0 auto;font-variant-numeric:tabular-nums;
+    font-weight:600;font-size:14px;color:var(--teal-deep);
+    text-align:right;white-space:nowrap;margin-top:2px;
+  }
+  @media(max-width:520px){
+    .leg{flex-wrap:wrap}
+    .leg-price{width:100%;text-align:left;padding-left:69px;margin-top:2px}
+  }
+
+  /* ---------------- NEW: hotel card ---------------- */
+  .stay{
+    display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;
+    border:1px solid var(--line);border-left:4px solid var(--teal);
+    border-radius:6px;padding:18px 20px;margin:26px 0 6px;
+  }
+  .stay-info{flex:1;min-width:230px}
+  .stay-eyebrow{
+    font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;margin-bottom:5px;
+  }
+  .stay-name{font-family:"Fraunces",serif;font-weight:600;font-size:21px;line-height:1.15;margin:0 0 4px}
+  .stay-why{font-size:14.5px;color:#54514b;line-height:1.55}
+  .stay-side{flex:0 0 auto;text-align:right;min-width:150px}
+  .stay-price{font-weight:600;color:var(--teal-deep);font-size:15px;font-variant-numeric:tabular-nums}
+  .stay-links{margin-top:8px;display:flex;flex-direction:column;gap:5px;align-items:flex-end}
+  .stay-links a{font-size:13.5px;font-weight:600}
+  @media(max-width:520px){
+    .stay-side{text-align:left;width:100%}
+    .stay-links{align-items:flex-start}
+  }
+
+  /* ---------------- NEW: book-now checklist ---------------- */
+  .booknow{background:var(--paper);padding:64px 24px 56px}
+  .booknow .inner{max-width:720px;margin:0 auto}
+  .booknow h2{
+    font-family:"Fraunces",serif;font-weight:500;
+    font-size:clamp(28px,5.5vw,40px);margin:0 0 10px;
+  }
+  .booknow .lede{color:#5a564f;font-size:16px;line-height:1.75;margin:0 0 26px}
+  .chk{
+    display:flex;gap:14px;align-items:flex-start;
+    background:#fff;border:1px solid var(--line);border-radius:6px;
+    padding:16px 18px;margin:0 0 12px;cursor:pointer;
+    transition:border-color .2s, opacity .2s;
+  }
+  .chk:hover{border-color:var(--teal)}
+  .chk.done{opacity:.55}
+  .chk.done .chk-title{text-decoration:line-through}
+  .box{
+    flex:0 0 auto;width:22px;height:22px;border-radius:5px;margin-top:2px;
+    border:2px solid var(--teal-deep);display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:14px;font-weight:700;background:#fff;transition:.15s;
+  }
+  .chk.done .box{background:var(--teal-deep)}
+  .chk-main{flex:1;min-width:0}
+  .chk-title{font-weight:600;font-size:15.5px;color:var(--ink)}
+  .chk-title .urgency{
+    font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+    color:#fff;background:#C46A3A;border-radius:3px;padding:2px 7px;margin-left:8px;
+    position:relative;top:-1px;white-space:nowrap;
+  }
+  .chk-desc{font-size:14px;color:#54514b;line-height:1.55;margin-top:4px}
+  .chk-desc a{font-weight:600}
+  .chk-price{flex:0 0 auto;font-weight:600;color:var(--teal-deep);font-size:14px;white-space:nowrap;margin-top:3px;font-variant-numeric:tabular-nums}
+  @media(max-width:520px){
+    .chk{flex-wrap:wrap}
+    .chk-price{padding-left:36px}
+  }
+  .budget{
+    margin-top:30px;border-top:1px solid #E0D9CB;padding-top:22px;
+    font-size:14.5px;color:#5a564f;line-height:1.8;
+  }
+  .budget strong{color:var(--ink)}
+
+  /* ---------------- closing ---------------- */
+  .closing{background:#fff;padding:60px 24px 76px;text-align:center}
+  .closing .inner{max-width:620px;margin:0 auto}
+  .closing h2{font-family:"Fraunces",serif;font-weight:500;font-size:clamp(26px,5.5vw,38px);margin:0 0 16px}
+  .closing p{color:#5a564f;font-size:16px;line-height:1.8;margin:0 0 8px}
+  .closing .air{font-size:14px;color:var(--muted);margin-top:18px;line-height:1.7}
+
+  /* ---------------- back to top ---------------- */
+  .totop{
+    position:fixed;right:16px;bottom:18px;z-index:70;
+    width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--teal);color:#fff;font-size:20px;
+    box-shadow:0 8px 22px -8px rgba(0,40,46,.6);
+    opacity:0;pointer-events:none;transition:.25s;
+  }
+  .totop.show{opacity:1;pointer-events:auto}
+  .totop:focus-visible,.tab:focus-visible,.chk:focus-visible,.dot:focus-visible{outline:2px solid var(--teal-deep);outline-offset:2px}
+</style>
+</head>
+<body>
+
+  <nav class="tabs" id="tabs">
+    <a class="tab" href="#top">Overview</a>
+    <a class="tab" href="#day1">Day 1 · Annecy</a>
+    <a class="tab" href="#day2">Day 2 · Chamonix</a>
+    <a class="tab" href="#day3">Day 3 · Briançon</a>
+    <a class="tab" href="#day4">Day 4 · The Road Home</a>
+    <a class="tab book" href="#booknow">Book these now →</a>
+  </nav>
+
+  <main id="app"></main>
+
+  <button class="totop" id="totop" aria-label="Back to top">⌃</button>
+
+<script>
+/* =================================================================
+   PHOTOS — same /images folder convention as the vision board.
+   Filenames match the vision-board repo where the shot carries over;
+   new Day-4 shots are listed at the bottom.
+================================================================= */
+function img(file,w){
+  if(/^(images\/|\.?\/|https?:)/i.test(file)) return file;
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${file}?width=${w}`;
+}
+
+const FILES = {
+  /* — full-screen day backgrounds — */
+  lakeAnnecy    : "images/lake-annecy.jpg",            // DAY 1 bg — turquoise Lake Annecy & peaks
+  annecyThiou   : "images/annecy-thiou-houses.jpg",    // DAY 2 bg — coloured houses on the Thiou
+  chamonix      : "images/chamonix-mont-blanc.jpg",    // DAY 3 bg — Chamonix valley beneath Mont Blanc
+  briancon      : "images/briancon-vauban.jpg",        // DAY 4 bg — Vauban ramparts of Briançon
+  /* — Day 1 gallery: Annecy — */
+  pontAmours    : "images/annecy-pont-des-amours.jpg", // the Pont des Amours / lakefront
+  annecyCanal   : "images/annecy-canals.jpg",          // flower-lined canals in the old town
+  palaisIle     : "images/annecy-palais-ile.jpg",      // the Palais de l'Île in the canal
+  annecyGelato  : "images/annecy-gelato.jpg",          // gelato & people-watching in the old town
+  albigny       : "images/annecy-plage-albigny.jpg",   // evening swim off the Plage d'Albigny
+  /* — Day 2 gallery: lake to Chamonix — */
+  lakeBoat      : "images/annecy-lake-boat.jpg",       // a boat trip / swim on Lake Annecy
+  annecyBikes   : "images/annecy-bike-path.jpg",       // the lakeside cycle path
+  annecyMarket  : "images/annecy-market.jpg",          // a morning market (Novel district on Thursdays)
+  chamonixFood  : "images/chamonix_food.webp",         // Savoyard mountain food in Chamonix
+  chamonixArr   : "images/chamonix-valley-road.jpg",   // the drive up into the mountains
+  chamonixTown  : "images/chamonix-town.jpg",          // Chamonix town with Mont Blanc above
+  /* — Day 3 gallery: high mountains — */
+  aiguille      : "images/aiguille-du-midi.jpg",       // Aiguille du Midi summit / Mont Blanc panorama
+  aiguilleVoid  : "images/step-into-the-void.jpg",     // the glass 'Step into the Void' box
+  merDeGlace    : "images/mer-de-glace.jpg",           // the Mer de Glace glacier (weather backup)
+  passDrive     : "images/alpine-pass-drive.jpg",      // the Col du Galibier drive south
+  col           : "images/alpine-col.jpg",             // a high alpine col viewpoint
+  brianconTown  : "images/briancon-old-town.jpg",      // arrival in the Cité Vauban
+  /* — Day 4 gallery: via ferrata & the road home — */
+  ferrata       : "images/ferrata.jpg",                // on the via ferrata, Gorges de la Durance
+  duranceGorge  : "images/durance-gorges.jpg",         // NEW — the Durance gorges & footbridges from below
+  brianconForts : "images/briancon-forts.jpg",         // the Vauban forts above town
+  brianconFood  : "images/briancon_food.jpg",          // one last mountain meal
+  beaune        : "images/beaune-burgundy.jpg",        // NEW — Beaune, the Burgundy dinner stop
+  cdgNight      : "images/cdg-arrival-night.jpg"       // NEW — rolling into CDG after dark
+};
+
+/* =================================================================
+   DATA
+================================================================= */
+const TRIP = {
+  heroTitle:"Gillian &amp; Marianne's Trip to the French Alps",
+  dates:"12 – 16 August 2026 · land 11:00 on the 12th · fly home 11:00 on the 16th",
+  stops:[
+    [49.00,2.55,"PARIS CDG"],
+    [45.90,6.13,"ANNECY"],
+    [45.92,6.87,"CHAMONIX"],
+    [44.90,6.65,"BRIANÇON"],
+    [44.79,6.56,"VIA FERRATA · L'ARGENTIÈRE"]
+  ],
+  routeLine:[[49.00,2.55],[45.90,6.13],[45.92,6.87],[44.90,6.65],[44.79,6.56]],
+  returnLine:[[44.79,6.56],[45.19,5.73],[45.76,4.84],[47.02,4.84],[49.00,2.55]], // via Grenoble, Lyon & Beaune
+  overview:[
+    "The French Alps — turquoise lakes, flower-lined canals and the snows of Mont Blanc, where laid-back lakeside days give way to high-mountain drama, legendary passes and the highest fortified town in France. A four-day escape of clear water, thin air and long views.",
+    "Beginning and ending at Paris CDG, this route runs south by TGV to Annecy, the ‘Venice of the Alps’, climbs by road to Chamonix beneath Mont Blanc and the 3,842 m Aiguille du Midi, crosses the Col du Galibier to the walled Cité Vauban of Briançon — with a via ferrata above the glacier-blue Durance — then returns north through Burgundy to a bed beside the airport, ready for the 11:00 flight home.",
+    "How this site works: each day below has the plan hour by hour, a <em>Getting there</em> card with real prices and booking links, the night's hotel, and a few options to pick from. Everything is priced so the whole thing can be sanity-checked before anything gets booked. The <a href='#booknow'>Book these now</a> list at the bottom is the to-do list, in order of urgency — it's six weeks out in peak season, so the sooner the better."
+  ],
+  days:[
+    /* ------------------------------ DAY 1 ------------------------------ */
+    {id:"day1",dno:"Day 1 of 4",title:"Land &amp; Ride South to Annecy",date:"Wednesday 12 August",bg:FILES.lakeAnnecy,
+     intro:{ttl:"On Arrival",txt:"No airport-to-Paris shuffle: the TGV station is inside Terminal 2. Land at 11:00, clear immigration, grab a sandwich, and board a train straight to the ‘Venice of the Alps’."},
+     logi:{h:"Getting there · CDG → Annecy",legs:[
+       {mode:"train",title:"TGV from Aéroport CDG 2 TGV, ~14:00–15:00 departure",desc:"Book the first departure at least 2.5–3 h after landing so immigration and bags can't wreck it. Direct trains run ~6×/day (≈4 h); if the direct times don't line up, connections via Lyon Part-Dieu run all afternoon. Take a semi-flexible fare — worth the few extra euros if the flight is late. Book on <a href='https://www.sncf-connect.com/en-en/' target='_blank' rel='noopener'>SNCF Connect</a> or <a href='https://www.thetrainline.com' target='_blank' rel='noopener'>Trainline</a>.",price:"€30–90 pp"},
+       {mode:"walk",title:"Annecy station → Auberge du Lyonnais",desc:"Ten minutes on foot into the old town. No car today — Annecy is entirely walkable and old-town parking is a nightmare anyway.",price:"free"}
+     ]},
+     sched:[
+      ["11:00","Land at Paris CDG. Immigration, bags, and follow the signs to the CDG 2 TGV station inside Terminal 2."],
+      ["14:30","TGV south — Burgundy, then the mountains rising through the window. (Exact time depends on the Wednesday timetable; book the first comfortable departure.)"],
+      ["18:30","Arrive Annecy; walk 10 minutes into the old town and check in."],
+      ["19:15","Golden-hour stroll: the Pont des Amours, the Jardins de l'Europe, the lakefront."],
+      ["20:30","Dinner beside the Thiou canal, a few steps from the hotel."]
+     ],
+     stay:{eyebrow:"Tonight in Annecy",name:"Auberge du Lyonnais",why:"A creaky-charming auberge right on the canal in the Vieille Ville — you step out the door into the postcard. Rooms over the water go first.",price:"~€130–180 / night",links:[
+       ["Booking.com","https://www.booking.com/searchresults.html?ss=Auberge+du+Lyonnais+Annecy&checkin=2026-08-12&checkout=2026-08-13"],
+       ["Search the hotel","https://www.google.com/search?q=Auberge+du+Lyonnais+Annecy"]
+     ]},
+     options:["Cross the Pont des Amours at golden hour","See the Palais de l'Île glowing in the canal","Gelato and people-watching in the old town","A dusk dip off the Plage d'Albigny if there's energy left"],
+     note:{cls:"alt",ttl:"Easing in",txt:"A travel day that ends gently: lake air, a canal-side table, and an early night. The mountains can wait until tomorrow."},
+     gallery:[FILES.pontAmours,FILES.annecyCanal,FILES.palaisIle,FILES.annecyGelato,FILES.albigny]
+    },
+    /* ------------------------------ DAY 2 ------------------------------ */
+    {id:"day2",dno:"Day 2 of 4",title:"Lake Morning, Then Up to Chamonix",date:"Thursday 13 August",bg:FILES.annecyThiou,
+     intro:{ttl:"The Day",txt:"A slow morning on the water, pick up the car before lunch, and by aperitif time Mont Blanc is filling the windscreen."},
+     logi:{h:"Getting there · Annecy → Chamonix",legs:[
+       {mode:"car",title:"Pick up the rental near Annecy station, ~11:00",desc:"Automatic transmission, one-way Annecy → Paris CDG, 13–15 Aug. Sixt, Europcar and Enterprise all have branches at or near the station — compare the one-way fee between them when booking: <a href='https://www.sixt.com/car-rental/france/annecy/' target='_blank' rel='noopener'>Sixt</a> · <a href='https://www.europcar.com/en-us/places/car-rental-france/annecy/annecy' target='_blank' rel='noopener'>Europcar</a> · <a href='https://www.enterprise.com/en/car-rental-locations/fr/annecy-train-station-f566.html' target='_blank' rel='noopener'>Enterprise</a>.",price:"~€250–400 · 3 days incl. one-way fee"},
+       {mode:"car",title:"Annecy → Chamonix, ~14:30",desc:"About 1 h 15 – 1 h 30 on an easy road, the peaks growing the whole way.",price:"~€20 fuel + tolls"}
+     ]},
+     sched:[
+      ["08:00","Breakfast, then the canals and the Palais de l'Île before the day-trippers."],
+      ["09:00","Onto the lake: a boat cruise or a swim in that impossibly clear water."],
+      ["11:00","Pick up the rental car near the station."],
+      ["12:30","Lunch by the lake before heading off."],
+      ["14:30","Drive to Chamonix — Mont Blanc rising ahead."],
+      ["16:30","Check in; aperitif on the terrace with the massif above."],
+      ["20:00","First Savoyard dinner — fondue or tartiflette."]
+     ],
+     stay:{eyebrow:"Tonight in Chamonix",name:"Alpina Eclectic Hôtel",why:"Panoramic Mont Blanc views — and the breakfast crêpe buffet. Fuel for tomorrow's 3,842 m.",price:"~€200–280 / night",links:[
+       ["Booking.com","https://www.booking.com/searchresults.html?ss=Alpina+Eclectic+Hotel+Chamonix&checkin=2026-08-13&checkout=2026-08-14"],
+       ["Official site","https://www.alpinachamonix.com/en/"]
+     ]},
+     options:["Lake Annecy boat cruise (~€17–25 pp, <a href='https://www.google.com/search?q=compagnie+des+bateaux+annecy+lake+cruise' target='_blank' rel='noopener'>Compagnie des Bateaux</a>)","A market morning — heads-up: the famous old-town market runs Tue/Fri/Sun only, but the Novel district holds its local Thursday market, 6:00–13:00","Rent bikes along the lakeside path","The Château d'Annecy above the rooftops","Gelato for the road"],
+     note:{cls:"",ttl:"Good to book",txt:"The rental car is the one to lock in early — automatics are the minority of French fleets and the first thing to sell out in August, doubly so for one-way rentals. Boat cruises rarely need pre-booking; just go before the midday rush."},
+     gallery:[FILES.lakeBoat,FILES.annecyBikes,FILES.annecyMarket,FILES.chamonixArr,FILES.chamonixTown,FILES.chamonixFood]
+    },
+    /* ------------------------------ DAY 3 ------------------------------ */
+    {id:"day3",dno:"Day 3 of 4",title:"Mont Blanc &amp; the Galibier Road",date:"Friday 14 August",bg:FILES.chamonix,
+     intro:{ttl:"The Big Mountain Day",txt:"Crêpes at dawn, 3,842 metres by mid-morning, and one of the greatest drives in France in the afternoon — over the Col du Galibier to the walled city of Briançon."},
+     logi:{h:"Getting there · the summit &amp; the pass",legs:[
+       {mode:"cable",title:"Aiguille du Midi cable car — book a ~07:30 slot",desc:"Runs daily 06:10–18:00 in mid-August (last round trip 16:30), weather permitting. Book a timed morning ticket in advance on <a href='https://aiguilledumidi.montblancnaturalresort.com/en/timetables-rates' target='_blank' rel='noopener'>Mont Blanc Natural Resort</a> — early slots have the clearest skies and shortest lines. Allow 3–4 h total. Bring warm layers: it's below freezing at the top, even in August.",price:"€83 pp round trip"},
+       {mode:"car",title:"Chamonix → Briançon over the cols, ~13:00",desc:"The scenic route: Col du Télégraphe → Col du Galibier (2,642 m, a Tour de France legend) → Col du Lautaret. About 3.5–4 h with photo stops. Faster autoroute option via Grenoble if the weather turns.",price:"~€30–40 fuel + tolls"}
+     ]},
+     sched:[
+      ["06:45","The crêpe buffet. This is why we're here."],
+      ["07:30","Aiguille du Midi — two cable-car legs to 3,842 m, then the terraces, Le Tube, and the Mont Blanc panorama."],
+      ["11:30","Back in the valley; lunch in Chamonix."],
+      ["13:00","The Galibier road south — switchbacks, marmots, and the high Alps in every direction."],
+      ["17:30","Arrive Briançon; check in and walk into the Cité Vauban, the highest town in France."],
+      ["19:30","Ramparts at sunset, then dinner in the walled old town."]
+     ],
+     stay:{eyebrow:"Tonight in Briançon",name:"Hôtel de la Chaussée",why:"A family-run classic at the foot of the Cité Vauban — steps from the ramparts, dinner, and tomorrow's early start.",price:"~€100–160 / night",links:[
+       ["Booking.com","https://www.booking.com/searchresults.html?ss=Hotel+de+la+Chaussee+Briancon&checkin=2026-08-14&checkout=2026-08-15"],
+       ["Search the hotel","https://www.google.com/search?q=Hotel+de+la+Chaussee+Briancon"]
+     ]},
+     options:["The ‘Step into the Void’ glass box at the summit (included in the ticket — just queue)","The Panoramic Mont-Blanc gondola onward over the glacier to Italy (+~€125 pp, weather-dependent — a splurge, decide on the day)","If clouds close the summit: the Montenvers railway to the Mer de Glace instead","A photo stop at the Galibier summit marker"],
+     note:{cls:"",ttl:"Good to book",txt:"Aiguille du Midi timed tickets sell out in August — book the slot as soon as the plan is confirmed, and check the mountain webcams the night before. Around 40% of visitors feel the altitude a little; go slow up top."},
+     gallery:[FILES.aiguille,FILES.aiguilleVoid,FILES.passDrive,FILES.col,FILES.brianconTown,FILES.merDeGlace]
+    },
+    /* ------------------------------ DAY 4 ------------------------------ */
+    {id:"day4",dno:"Day 4 of 4",title:"Via Ferrata &amp; the Long Road Home",date:"Saturday 15 August",bg:FILES.briancon,
+     intro:{ttl:"The Finale",txt:"Ladders and footbridges above a glacier-blue river in the morning, a Burgundy dinner on the way north, and a bed beside the airport by midnight. No rush, no night-train gamble."},
+     logi:{h:"Getting there · the gorge &amp; the drive north",legs:[
+       {mode:"climb",title:"Via ferrata des Gorges de la Durance, 09:00–12:00",desc:"Self-guided at the Roc Aventure site in L'Argentière-la-Bessée, 20 min from Briançon at the edge of the Écrins. Four routes above the turquoise Durance — the red suits regular sporty types; the black is 1,200 m with 5 footbridges (~3 h) for strong arms and big appetites. Site access plus harness/lanyard/helmet hire on the spot; two optional 500 m zip lines 200 m over the river (+€27–30 pp). Info: <a href='https://www.roc-aventure.com' target='_blank' rel='noopener'>Roc Aventure</a>.",price:"~€22–28 pp · access + gear"},
+       {mode:"car",title:"Briançon → Paris CDG, dep. ~14:00",desc:"About 720 km / 8–9 h door to door with stops: Grenoble, Lyon, then the A6 north. Dinner-and-fuel stop in Beaune (~18:30) — one last French town, in the middle of Burgundy wine country. Confirm the after-hours key drop with the rental agency when booking.",price:"~€130–160 fuel + tolls"},
+       {mode:"walk",title:"CDG rental return → airport hotel, ~22:30–23:00",desc:"Airport hotels run 24-hour front desks — add a note on the reservation that arrival is around 23:00. Shuttle or short walk, then sleep.",price:"—"}
+     ]},
+     sched:[
+      ["08:00","Breakfast in the Cité Vauban; last look at the ramparts."],
+      ["08:40","Drive 20 minutes down-valley to L'Argentière-la-Bessée."],
+      ["09:00","Clip in: the via ferrata of the Durance gorges — monkey bridges, Nepalese bridges, turquoise water below."],
+      ["12:15","Lunch at Le ROC, the riverside terrace at the foot of the routes."],
+      ["14:00","Point the car north. Mountains fade, vineyards begin."],
+      ["18:30","Dinner stop in Beaune — Burgundy's wine capital, and dead on the route."],
+      ["22:45","Arrive CDG; drop the car, shuttle to the hotel, collapse happily."]
+     ],
+     stay:{eyebrow:"Tonight beside the airport",name:"CDG airport hotel — ibis Styles · Novotel · citizenM",why:"Pick whichever has the best rate — all three sit at the terminals with shuttles and 24-hour desks. The whole point: tomorrow is a 15-minute hop to the gate.",price:"~€100–180 / night",links:[
+       ["Compare on Booking.com","https://www.booking.com/searchresults.html?ss=Paris+Charles+de+Gaulle+Airport+hotel&checkin=2026-08-15&checkout=2026-08-16"],
+       ["citizenM CDG","https://www.citizenm.com/hotels/europe/paris/paris-charles-de-gaulle-airport-hotel"]
+     ]},
+     options:["The black route if the arms say yes; the red is plenty spectacular","The 500 m zip lines across the gorge (+€27–30 pp)","Picnic provisions from Briançon for the road","A vineyard-view coffee in Beaune before the last leg","Swap Beaune for a Lyon bouchon dinner if you'd rather stop earlier"],
+     note:{cls:"alt",ttl:"Why not the night train?",txt:"The sleeper from Briançon is wonderful — but it arrives at Paris Austerlitz at 08:08, an hour from CDG, for an 11:00 flight. Zero buffer, frequent delays. The late drive plus an airport bed means Sunday morning is stress-free: shuttle at 08:00, gate by 08:30, croissant in hand."},
+     gallery:[FILES.ferrata,FILES.duranceGorge,FILES.brianconForts,FILES.brianconFood,FILES.beaune,FILES.cdgNight]
+    }
+  ],
+  booknow:{
+    lede:"Prices are peak-August ranges as of early July; the trip is six weeks out, so top-of-list items first. Tap to tick things off as they're booked (ticks last for this visit only).",
+    items:[
+      {t:"The four hotels",u:"Do first",p:"~€560–800 total",d:"Auberge du Lyonnais (12th) · Alpina Eclectic (13th) · Hôtel de la Chaussée (14th) · a CDG airport hotel (15th, note the ~23:00 arrival). Mid-August rooms in Annecy and Chamonix vanish first — links are on each day's card above."},
+      {t:"TGV · CDG Airport → Annecy · Wed 12 Aug",u:"Do first",p:"€30–90 pp",d:"First comfortable departure after ~14:00, semi-flexible fare. <a href='https://www.sncf-connect.com/en-en/' target='_blank' rel='noopener'>SNCF Connect</a> or <a href='https://www.thetrainline.com' target='_blank' rel='noopener'>Trainline</a>. Advance fares climb weekly."},
+      {t:"Rental car · Annecy station → CDG · 13–15 Aug · automatic",u:"Do first",p:"~€250–400 incl. one-way fee",d:"Compare the one-way fee across <a href='https://www.sixt.com/car-rental/france/annecy/' target='_blank' rel='noopener'>Sixt</a>, <a href='https://www.europcar.com/en-us/places/car-rental-france/annecy/annecy' target='_blank' rel='noopener'>Europcar</a> and <a href='https://www.enterprise.com/en/car-rental-locations/fr/annecy-train-station-f566.html' target='_blank' rel='noopener'>Enterprise</a>. Confirm the CDG after-hours key drop. Automatics are scarce in French fleets — this is the item most likely to sell out."},
+      {t:"Aiguille du Midi · timed ticket · Fri 14 Aug, ~07:30",u:"This week",p:"€83 pp round trip",d:"Book the slot on <a href='https://aiguilledumidi.montblancnaturalresort.com/en/timetables-rates' target='_blank' rel='noopener'>Mont Blanc Natural Resort</a>. Early-morning August slots are the ones that sell out."},
+      {t:"Via ferrata · Gorges de la Durance · Sat 15 Aug, 09:00",u:"Easy",p:"~€22–28 pp",d:"Self-guided: pay site access + gear hire (harness, lanyards, helmet) at the <a href='https://www.roc-aventure.com' target='_blank' rel='noopener'>Roc Aventure</a> base in L'Argentière-la-Bessée. Arrive at opening to beat the August crowd; zip lines bookable on the spot."},
+      {t:"Dinner tables · Chamonix (13th) &amp; Briançon (14th)",u:"Nice to do",p:"—",d:"August evenings book out at the good Savoyard spots. One reservation each is enough — lunch places are walk-in."}
+    ],
+    budget:"Rough totals, for two people sharing: transport + activities — TGV <strong>€60–180</strong> · rental car <strong>€250–400</strong> · fuel &amp; tolls <strong>€180–220</strong> · Aiguille du Midi <strong>€166</strong> · via ferrata <strong>€44–56</strong> ≈ <strong>€700–1,020</strong>. Hotels add roughly <strong>€560–800</strong> for the four nights. Whole trip (before meals and the flights): about <strong>€1,260–1,820 for two</strong>, i.e. roughly <strong>€630–910 per person</strong>."
+  }
+};
+
+/* =================================================================
+   RENDER
+================================================================= */
+function ev([t,d]){return `<div class="ev"><span class="t">${t}</span><span class="d">${d}</span></div>`;}
+function legHTML(l){
+  const modeCls = l.mode==="walk"?"mode walk":l.mode==="cable"?"mode cable":l.mode==="climb"?"mode climb":"mode";
+  const modeTxt = l.mode==="cable"?"cable car":l.mode==="climb"?"ferrata":l.mode;
+  return `<div class="leg">
+    <span class="${modeCls}">${modeTxt}</span>
+    <div class="leg-main">
+      <div class="leg-title">${l.title}</div>
+      <div class="leg-desc">${l.desc}</div>
+    </div>
+    <div class="leg-price">${l.price}</div>
+  </div>`;
+}
+function stayHTML(s){
+  return `<div class="stay">
+    <div class="stay-info">
+      <div class="stay-eyebrow">${s.eyebrow}</div>
+      <div class="stay-name serif">${s.name}</div>
+      <div class="stay-why">${s.why}</div>
+    </div>
+    <div class="stay-side">
+      <div class="stay-price">${s.price}</div>
+      <div class="stay-links">${s.links.map(([label,url])=>`<a href="${url}" target="_blank" rel="noopener">${label} →</a>`).join("")}</div>
+    </div>
+  </div>`;
+}
+function galleryHTML(gid, files){
+  return `
+  <div class="gallery-wrap">
+    <div class="gallery" data-gallery="${gid}">
+      ${files.map(f=>`<div class="slide"><img loading="lazy" alt="" src="${img(f,1500)}"></div>`).join("")}
+    </div>
+    <div class="dots" data-dots="${gid}">
+      ${files.map((_,i)=>`<button class="dot ${i===0?'on':''}" data-i="${i}" aria-label="Photo ${i+1}"></button>`).join("")}
+    </div>
+  </div>`;
+}
+function dayHTML(d){
+  return `
+  <section class="scene day" id="${d.id}">
+    <div class="bg"><img loading="lazy" alt="${d.title.replace(/&amp;/g,'&')}" src="${img(d.bg,2000)}"><div class="day-scrim"></div></div>
+    <div class="cap">
+      <div class="dno">${d.dno}</div>
+      <h3>${d.title}</h3>
+      <div class="ddate">${d.date}</div>
+    </div>
+    <div class="panel">
+      <div class="day-body">
+        <div class="callout"><span class="ttl">${d.intro.ttl}</span>${d.intro.txt}</div>
+        ${galleryHTML(d.id, d.gallery)}
+        <div class="logi">
+          <div class="logi-h">${d.logi.h}</div>
+          ${d.logi.legs.map(legHTML).join("")}
+        </div>
+        ${d.sched.map(ev).join("")}
+        ${stayHTML(d.stay)}
+        <div class="opt-h">Options for the day include:</div>
+        <ul class="opt">${d.options.map(o=>`<li>${o}</li>`).join("")}</ul>
+        <div class="callout ${d.note.cls}"><span class="ttl">${d.note.ttl}</span>${d.note.txt}</div>
+      </div>
+    </div>
+  </section>`;
+}
+function booknowHTML(b){
+  return `
+  <section class="booknow" id="booknow">
+    <div class="inner">
+      <h2 class="serif">Book these now</h2>
+      <p class="lede">${b.lede}</p>
+      ${b.items.map((it,i)=>`
+        <div class="chk" data-chk="${i}" role="checkbox" aria-checked="false" tabindex="0">
+          <span class="box" aria-hidden="true">✓</span>
+          <div class="chk-main">
+            <div class="chk-title">${it.t}<span class="urgency">${it.u}</span></div>
+            <div class="chk-desc">${it.d}</div>
+          </div>
+          <div class="chk-price">${it.p}</div>
+        </div>`).join("")}
+      <div class="budget">${b.budget}</div>
+    </div>
+  </section>`;
+}
+
+document.getElementById("app").innerHTML = `
+  <section class="scene hero" id="top">
+    <div class="bg">
+      <div class="heromap" id="heromap"></div>
+      <div class="hero-tint"></div>
+      <div class="scrollcue">⌄</div>
+    </div>
+    <div class="cap">
+      <div class="eyebrow">Two Friends · France · August 2026</div>
+      <h1 class="serif">${TRIP.heroTitle}</h1>
+      <div class="dates">${TRIP.dates}</div>
+      <div class="locked">Final plan — ready to book</div>
+    </div>
+    <div class="panel">
+      <div class="section">
+        <h2 class="serif">Annecy · Chamonix · Briançon</h2>
+        ${TRIP.overview.map(p=>`<p>${p}</p>`).join("")}
+      </div>
+      <div class="routewrap">
+        <div class="route-label">The Route — TGV south, drive the mountains, drive home</div>
+        <div class="routemap" id="rmap"></div>
+      </div>
+    </div>
+  </section>
+
+  ${TRIP.days.map(dayHTML).join("")}
+
+  ${booknowHTML(TRIP.booknow)}
+
+  <div class="closing">
+    <div class="inner">
+      <h2 class="serif">Sunday 16 August: croissant, gate, home</h2>
+      <p>Shuttle from the hotel at 08:00, terminal by 08:15, flight at 11:00.</p>
+      <div class="air">Paris–Charles de Gaulle (IATA: CDG, ICAO: LFPG) · land 12 Aug 11:00 · depart 16 Aug 11:00</div>
+    </div>
+  </div>`;
+
+/* =================================================================
+   MAPS (Leaflet, same style as the vision board)
+================================================================= */
+const MAPS={};
+function initHeroMap(){
+  const map=L.map("heromap",{
+    zoomControl:false,attributionControl:true,
+    dragging:false,scrollWheelZoom:false,doubleClickZoom:false,
+    boxZoom:false,keyboard:false,touchZoom:false,tap:false
+  });
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+    {maxZoom:18,attribution:"&copy; OpenStreetMap, &copy; CARTO"}).addTo(map);
+  L.polyline(TRIP.returnLine,{color:"#0d3138",weight:2,dashArray:"1 6",opacity:.5}).addTo(map);
+  L.polyline(TRIP.routeLine,{color:"#0d3138",weight:2.5,dashArray:"2 7",opacity:.85}).addTo(map);
+  TRIP.stops.forEach(s=>{
+    L.circleMarker([s[0],s[1]],{radius:5,color:"#0d2127",weight:2,fillColor:"#16808F",fillOpacity:1}).addTo(map);
+  });
+  const b=L.latLngBounds(TRIP.routeLine.concat(TRIP.returnLine)).pad(0.3);
+  map.fitBounds(b);
+  MAPS.hero={map,b};
+}
+function initRouteMap(){
+  const map=L.map("rmap",{scrollWheelZoom:false,zoomControl:true});
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {maxZoom:18,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
+  L.polyline(TRIP.returnLine,{color:"#16808F",weight:2.5,dashArray:"1 7",opacity:.55}).addTo(map)
+    .bindTooltip("The drive home · Sat 15 Aug",{sticky:true});
+  L.polyline(TRIP.routeLine,{color:"#16808F",weight:3,dashArray:"3 8",opacity:.95}).addTo(map);
+  TRIP.stops.forEach(s=>{
+    L.circleMarker([s[0],s[1]],{radius:6,color:"#0d2127",weight:2,fillColor:"#16808F",fillOpacity:1})
+      .addTo(map).bindTooltip(s[2],{direction:"top",offset:[0,-6]});
+  });
+  // Beaune dinner-stop marker on the return leg
+  L.circleMarker([47.02,4.84],{radius:5,color:"#0d2127",weight:2,fillColor:"#C46A3A",fillOpacity:1})
+    .addTo(map).bindTooltip("BEAUNE · dinner stop",{direction:"top",offset:[0,-6]});
+  const b=L.latLngBounds(TRIP.routeLine.concat(TRIP.returnLine)).pad(0.2);
+  map.fitBounds(b);
+  MAPS.route={map,b};
+}
+if(window.L){ initHeroMap(); initRouteMap(); }
+
+/* graceful image fallback */
+document.querySelectorAll("img").forEach(im=>{
+  im.addEventListener("error",()=>{ im.style.background="linear-gradient(135deg,#cfe0e2,#a9c9cd)"; im.removeAttribute("src"); im.style.objectFit="cover"; });
+});
+
+/* galleries */
+document.querySelectorAll("[data-gallery]").forEach(g=>{
+  const key=g.dataset.gallery;
+  const dots=document.querySelector(`[data-dots="${key}"]`);
+  const dotEls=[...dots.children];
+  let raf=null;
+  g.addEventListener("scroll",()=>{
+    if(raf)return;
+    raf=requestAnimationFrame(()=>{
+      raf=null;
+      const slide=g.querySelector(".slide");
+      const w=slide?slide.getBoundingClientRect().width:g.clientWidth;
+      const idx=Math.round(g.scrollLeft/w);
+      dotEls.forEach((d,i)=>d.classList.toggle("on",i===idx));
+    });
+  },{passive:true});
+  dotEls.forEach(d=>d.addEventListener("click",()=>{
+    const slide=g.querySelector(".slide");
+    const w=slide?slide.getBoundingClientRect().width:g.clientWidth;
+    g.scrollTo({left:w*(+d.dataset.i),behavior:"smooth"});
+  }));
+});
+
+/* checklist (in-memory only — resets on reload) */
+document.querySelectorAll(".chk").forEach(c=>{
+  function toggle(){
+    const done=c.classList.toggle("done");
+    c.setAttribute("aria-checked",done?"true":"false");
+  }
+  c.addEventListener("click",e=>{ if(e.target.closest("a"))return; toggle(); });
+  c.addEventListener("keydown",e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle();} });
+});
+
+/* back to top */
+const totop=document.getElementById("totop");
+window.addEventListener("scroll",()=>{ totop.classList.toggle("show",window.scrollY>600); },{passive:true});
+totop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+</script>
+</body>
+</html>
