@@ -360,7 +360,7 @@ const FILES = {
   brianconForts : "images/briancon-forts.jpg",         // the Vauban forts above town
   brianconFood  : "images/briancon_food.jpg",          // one last mountain meal
   beaune        : "images/beaune-burgundy.jpg",        // NEW — Beaune, the Burgundy dinner stop
-  cdgNight      : "images/briancon-collegiale.jpg"       // NEW — rolling into CDG after dark
+  cdgNight      : "images/cdg-arrival-night.jpg"       // NEW — rolling into CDG after dark
 };
 
 /* =================================================================
@@ -388,17 +388,18 @@ const TRIP = {
     {id:"day1",dno:"Day 1 of 4",title:"Land &amp; Ride South to Annecy",date:"Wednesday 12 August",bg:FILES.lakeAnnecy,
      intro:{ttl:"On Arrival",txt:"No airport-to-Paris shuffle: the TGV station is inside Terminal 2. Land at 11:00, clear immigration, grab a sandwich, and board a train straight to the ‘Venice of the Alps’."},
      logi:{h:"Getting there · CDG → Annecy",legs:[
-       {mode:"train",title:"TGV from Aéroport CDG 2 TGV, ~14:00–15:00 departure",desc:"Book the first departure at least 2.5–3 h after landing so immigration and bags can't wreck it. Direct trains run ~6×/day (≈4 h); if the direct times don't line up, connections via Lyon Part-Dieu run all afternoon. Take a semi-flexible fare — worth the few extra euros if the flight is late. Book on <a href='https://www.sncf-connect.com/en-en/' target='_blank' rel='noopener'>SNCF Connect</a> or <a href='https://www.thetrainline.com' target='_blank' rel='noopener'>Trainline</a>.",price:"€30–90 pp"},
+       {mode:"train",title:"Trains 13:57 → Annecy 19:15 — Booked ✓ (two easy changes)",desc:"OUIGO 7835 from the CDG 2 TGV station (inside Terminal 2) to Lyon Part-Dieu, arr. 16:00 — Coach 15, seats 567 &amp; 571. Then TER 17988 at 17:08 to Aix-les-Bains (1 h 08 connection, time for a coffee), and TER 17582 at 18:37 into Annecy at 19:15 — the TERs are sit-anywhere. Heads-up: OUIGO includes only cabin-size bags; add the large-suitcase option online in advance (~€5/bag — far cheaper than at the platform). One booking = SNCF rebooks the connection free if anything runs late.",price:"booked"},
        {mode:"walk",title:"Annecy station → Auberge du Lyonnais",desc:"Ten minutes on foot into the old town. No car today — Annecy is entirely walkable and old-town parking is a nightmare anyway.",price:"free"}
      ]},
      sched:[
       ["11:00","Land at Paris CDG. Immigration, bags, and follow the signs to the CDG 2 TGV station inside Terminal 2."],
-      ["14:30","TGV south — Burgundy, then the mountains rising through the window. (Exact time depends on the Wednesday timetable; book the first comfortable departure.)"],
-      ["18:30","Arrive Annecy; walk 10 minutes into the old town and check in."],
-      ["19:15","Golden-hour stroll: the Pont des Amours, the Jardins de l'Europe, the lakefront."],
-      ["20:30","Dinner beside the Thiou canal, a few steps from the hotel."]
+      ["13:57","OUIGO south — Burgundy flying past. Coach 15, seats 567 &amp; 571."],
+      ["16:00","Lyon Part-Dieu: an hour to stretch, coffee in hand, before the 17:08 TER."],
+      ["18:37","Quick change at Aix-les-Bains onto the last TER — lake views from here."],
+      ["19:15","Arrive Annecy; walk 10 minutes into the old town and check in."],
+      ["20:30","Dinner beside the Thiou canal, a few steps from the hotel — with a lakefront stroll before or after."]
      ],
-     stay:{eyebrow:"Tonight in Annecy",name:"Auberge du Lyonnais",why:"A creaky-charming auberge right on the canal in the Vieille Ville — you step out the door into the postcard. Rooms over the water go first.",price:"~€290–300 / night",links:[
+     stay:{eyebrow:"Tonight in Annecy · Booked ✓",name:"Auberge du Lyonnais",why:"A creaky-charming auberge right on the canal in the Vieille Ville — step out the door into the postcard. Free cancellation.",price:"US$360 · booked",links:[
        ["Booking.com","https://www.booking.com/searchresults.html?ss=Auberge+du+Lyonnais+Annecy&checkin=2026-08-12&checkout=2026-08-13"],
        ["Search the hotel","https://www.google.com/search?q=Auberge+du+Lyonnais+Annecy"]
      ]},
@@ -422,7 +423,7 @@ const TRIP = {
       ["16:30","Check in; aperitif on the terrace with the massif above."],
       ["20:00","First Savoyard dinner — fondue or tartiflette."]
      ],
-     stay:{eyebrow:"Tonight in Chamonix",name:"Alpina Eclectic Hôtel",why:"Panoramic Mont Blanc views — and the breakfast crêpe buffet. Fuel for tomorrow's 3,842 m.",price:"~€350–400 / night",links:[
+     stay:{eyebrow:"Tonight in Chamonix · Booked ✓",name:"Alpina Eclectic Hôtel",why:"Panoramic Mont Blanc views — and the breakfast crêpe buffet. Fuel for tomorrow's 3,842 m. (Non-refundable, so this one's locked.)",price:"US$402 · booked",links:[
        ["Booking.com","https://www.booking.com/searchresults.html?ss=Alpina+Eclectic+Hotel+Chamonix&checkin=2026-08-13&checkout=2026-08-14"],
        ["Official site","https://www.alpinachamonix.com/en/"]
      ]},
@@ -445,7 +446,7 @@ const TRIP = {
       ["17:30","Arrive Briançon; check in and walk into the Cité Vauban, the highest town in France."],
       ["19:30","Ramparts at sunset, then dinner in the walled old town."]
      ],
-     stay:{eyebrow:"Tonight in Briançon",name:"Hôtel de la Chaussée",why:"A family-run classic at the foot of the Cité Vauban — steps from the ramparts, dinner, and tomorrow's early start.",price:"~€150 / night",links:[
+     stay:{eyebrow:"Tonight in Briançon · Booked ✓",name:"Hôtel de la Chaussée",why:"A family-run classic at the foot of the Cité Vauban — steps from the ramparts, dinner, and tomorrow's early start. Free cancellation.",price:"US$184 · booked",links:[
        ["Booking.com","https://www.booking.com/searchresults.html?aid=311088&label=ha-tel-de-la-chaussa-c-e-qW65EzXslWB9xNwJB8rN3AS201268023976%3Apl%3Ata%3Ap1%3Ap2%3Aac%3Aap%3Aneg%3Afi%3Atikwd-308175893681%3Alp9031971%3Ali%3Adec%3Adm%3Appccp%3DUmFuZG9tSVYkc2RlIyh9YcUc3ZfdbbfEjx46svoSs2o&gclid=CjwKCAjwu53SBhAhEiwAJzSLNtKds_1g8pNymZM62wi57MRnk1Y-nGy7VbCxpYXd8cD-NStku87lChoC09sQAvD_BwE&highlighted_hotels=438162&checkin=2026-08-14&redirected=1&city=-1415195&hlrd=with_av&source=hotel&checkout=2026-08-15&keep_landing=1&sid=c82728afe8d588b0fb5c770ffc0cdfee"],
        ["Search the hotel","https://www.google.com/search?q=Hotel+de+la+Chaussee+Briancon"]
      ]},
@@ -482,14 +483,14 @@ const TRIP = {
   booknow:{
     lede:"Prices are peak-August ranges as of early July; the trip is six weeks out, so top-of-list items first. Tap to tick things off as they're booked (ticks last for this visit only).",
     items:[
-      {t:"The four hotels",u:"Do first",p:"~€890–1,030 total",d:"Auberge du Lyonnais (12th) · Alpina Eclectic (13th) · Hôtel de la Chaussée (14th) · a CDG airport hotel (15th, note the ~23:00 arrival). Mid-August rooms in Annecy and Chamonix vanish first — links are on each day's card above."},
-      {t:"TGV · CDG Airport → Annecy · Wed 12 Aug",u:"Do first",p:"€30–90 pp",d:"First comfortable departure after ~14:00, semi-flexible fare. <a href='https://www.sncf-connect.com/en-en/' target='_blank' rel='noopener'>SNCF Connect</a> or <a href='https://www.thetrainline.com' target='_blank' rel='noopener'>Trainline</a>. Advance fares climb weekly."},
+      {t:"Hotels · 3 of 4 booked ✓ — CDG airport night still to go",u:"Do first",p:"€100–180 remaining",d:"Auberge du Lyonnais, Alpina Eclectic and Hôtel de la Chaussée are confirmed. Last one: a CDG airport hotel for the 15th — <a href='https://www.booking.com/searchresults.html?ss=Paris+Charles+de+Gaulle+Airport+hotel&checkin=2026-08-15&checkout=2026-08-16' target='_blank' rel='noopener'>compare on Booking.com</a> and note the ~23:00 arrival on the reservation."},
+      {t:"Trains · CDG → Annecy · Wed 12 Aug",u:"Booked ✓",p:"13:57 → 19:15",d:"OUIGO 7835 to Lyon Part-Dieu, then TERs via Aix-les-Bains. One small to-do left: add the OUIGO large-luggage option online (~€5/bag) — the base fare covers cabin bags only.",done:true},
       {t:"Rental car · Annecy station → CDG · 13–15 Aug · automatic",u:"Do first",p:"~€600 · ~€200/day incl. one-way fee",d:"Compare the one-way fee across <a href='https://www.sixt.com/car-rental/france/annecy/' target='_blank' rel='noopener'>Sixt</a>, <a href='https://www.europcar.com/en-us/places/car-rental-france/annecy/annecy' target='_blank' rel='noopener'>Europcar</a> and <a href='https://www.enterprise.com/en/car-rental-locations/fr/annecy-train-station-f566.html' target='_blank' rel='noopener'>Enterprise</a>. Confirm the CDG after-hours key drop. Automatics are scarce in French fleets — this is the item most likely to sell out."},
       {t:"Aiguille du Midi · timed ticket · Fri 14 Aug, ~07:30",u:"This week",p:"€83 pp round trip",d:"Book the slot on <a href='https://aiguilledumidi.montblancnaturalresort.com/en/timetables-rates' target='_blank' rel='noopener'>Mont Blanc Natural Resort</a>. Early-morning August slots are the ones that sell out."},
       {t:"Via ferrata · Gorges de la Durance · Sat 15 Aug, 09:00",u:"Easy",p:"~€22–28 pp",d:"Self-guided: pay site access + gear hire (harness, lanyards, helmet) at the <a href='https://www.roc-aventure.com' target='_blank' rel='noopener'>Roc Aventure</a> base in L'Argentière-la-Bessée. Arrive at opening to beat the August crowd; zip lines bookable on the spot."},
       {t:"Dinner tables · Chamonix (13th) &amp; Briançon (14th)",u:"Nice to do",p:"—",d:"August evenings book out at the good Savoyard spots. One reservation each is enough — lunch places are walk-in."}
     ],
-    budget:"Rough totals, for two people sharing: transport + activities — TGV <strong>€60–180</strong> · rental car <strong>~€600</strong> · fuel &amp; tolls <strong>€180–220</strong> · Aiguille du Midi <strong>€166</strong> · via ferrata <strong>€44–56</strong> ≈ <strong>€1,050–1,220</strong>. Hotels add roughly <strong>€890–1,030</strong> for the four nights. Whole trip (before meals and the flights): about <strong>€1,940–2,250 for two</strong>, i.e. roughly <strong>€970–1,125 per person</strong>."
+    budget:"Rough totals, for two people sharing: transport + activities — TGV <strong>booked</strong> · rental car <strong>~€600</strong> · fuel &amp; tolls <strong>€180–220</strong> · Aiguille du Midi <strong>€166</strong> · via ferrata <strong>€44–56</strong>. Hotels: <strong>US$946 (~€810) booked</strong> for the first three nights, plus <strong>€100–180</strong> for the CDG night. Whole trip lands around <strong>€2,000–2,150 for two</strong> before meals and flights — roughly <strong>€1,000–1,075 per person</strong>."
   }
 };
 
@@ -566,10 +567,10 @@ function booknowHTML(b){
       <h2 class="serif">Book these now</h2>
       <p class="lede">${b.lede}</p>
       ${b.items.map((it,i)=>`
-        <div class="chk" data-chk="${i}" role="checkbox" aria-checked="false" tabindex="0">
+        <div class="chk${it.done?' done':''}" data-chk="${i}" role="checkbox" aria-checked="${it.done?'true':'false'}" tabindex="0">
           <span class="box" aria-hidden="true">✓</span>
           <div class="chk-main">
-            <div class="chk-title">${it.t}<span class="urgency">${it.u}</span></div>
+            <div class="chk-title">${it.t}<span class="urgency"${it.done?' style="background:#2BB0A4"':''}>${it.u}</span></div>
             <div class="chk-desc">${it.d}</div>
           </div>
           <div class="chk-price">${it.p}</div>
